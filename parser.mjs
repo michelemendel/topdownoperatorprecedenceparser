@@ -1,12 +1,12 @@
 import { precedences } from "./constants.mjs";
 import { prefixParselets, infixParselets } from "./parseletsLookup.mjs";
 
-// parseCode :: tokens -> int -> expression
 export const parseCode = (tokens, precedence = 0) => {
-  let c = consume(tokens);
-  let token = c[0];
-  tokens = c[1];
+  return parsePrefix(consume(tokens), precedence);
+};
 
+// parseCode :: tokens -> int -> expression
+export const parsePrefix = ([token, tokens], precedence = 0) => {
   if (!token) {
     throw new SyntaxError(`Invalid token - ${token}.`);
   }
@@ -22,18 +22,14 @@ export const parseCode = (tokens, precedence = 0) => {
   let left = prefix.parse(token, tokens);
 
   while (precedence < getPrecedence(tokens)) {
-    let c = consume(tokens);
-    let token = c[0];
-    tokens = c[1];
-
-    const infix = infixParselets(token, tokens);
-
-    const p = infix.parse(left, token, tokens);
-    left = p[0];
-    tokens = p[1];
+    [left, tokens] = parseInfix(consume(tokens), left);
   }
 
   return [left, tokens];
+};
+
+const parseInfix = ([token, tokens], left) => {
+  return infixParselets(token).parse(token, tokens, left);
 };
 
 // consume :: token -> [token, tokens]

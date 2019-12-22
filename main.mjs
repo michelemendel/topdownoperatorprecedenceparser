@@ -2,7 +2,7 @@ import { tokenize } from "./lexer.mjs";
 import { parseCode } from "./parser.mjs";
 
 const code = `
-2 + 8 + 10 * AAA
+2 * 1440 - 909
 // ( HELLO BYE )
 //Johnny B
 //"hello"

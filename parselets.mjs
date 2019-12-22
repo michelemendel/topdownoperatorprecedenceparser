@@ -11,7 +11,7 @@ import {
 export const parsePrefixOperator = (token, tokens) => {};
 
 // parseInfixOperator :: expression -> token -> token[]-> [expression, expression]
-export const parseInfixOperator = (left, token, tokens) => {
+export const parseInfixOperator = (token, tokens, left) => {
   const right = parseCode(
     tokens,
     precedences[token.type] -
@@ -23,7 +23,7 @@ export const parseInfixOperator = (left, token, tokens) => {
 };
 
 //
-export const parseNumber = token => {
+export const parseNumber = (token, tokens) => {
   //   console.log("---> parseNumber");
   return numberExpression(token);
 };
@@ -63,7 +63,7 @@ export const parseGroup = (token, tokens) => {
 };
 
 // ex: fn(1, 2)
-export const parseCall = (token, tokens) => {
+export const parseCall = (token, tokens, left) => {
   console.log("---> parseCall");
   //   const expression = parseCode(token);
   //   consume(tokens, tokenType.R_PAREN);
