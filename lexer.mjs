@@ -34,7 +34,7 @@ export function tokenize(source) {
   const result = [];
 
   lines.forEach(function(line, lineNr) {
-    const rx_token = /(\u0020+)|(\/\/.*)|([@#a-zA-Z][a-zA-Z_0-9]*)|(\d+(?:\.\d+)?(?:[eE][+\-]?\d+)?)|("(?:[^"\\]|\\(?:[nr"\\]|u[0-9a-fA-F]{4}))*")|([(){}\[\]?.,:;~*\/]|&&?|\|\|?|[+\-<>]=?|[!=](?:==)?)/y;
+    const rx_token = /(\u0020+)|(\/\/.*)|([@#%a-zA-Z][a-zA-Z_0-9]*)|(\d+(?:\.\d+)?(?:[eE][+\-]?\d+)?)|("(?:[^"\\]|\\(?:[nr"\\]|u[0-9a-fA-F]{4}))*")|([(){}\[\]?.,:;~*\/]|&&?|\|\|?|[+\-<>]=?|[!=](?:==)?)/y;
 
     // Capture Group
     // [1]  Whitespace
@@ -57,6 +57,8 @@ export function tokenize(source) {
 
     while (columnNr < line.length) {
       let captives = rx_token.exec(line);
+
+      //   console.log("--C->", captives);
 
       if (!captives) {
         throw new SyntaxError("line " + lineNr + " column " + columnNr);

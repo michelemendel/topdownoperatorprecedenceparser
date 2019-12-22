@@ -1,8 +1,8 @@
 import { tokenize } from "./lexer.mjs";
 import { parseCode } from "./parser.mjs";
 
-const code = `
-2 * 1440 - 909
+const code1 = `
+2 * 1440 - 909 % 888
 // ( HELLO BYE )
 //Johnny B
 //"hello"
@@ -13,6 +13,8 @@ const code = `
 //let fn = function() {};
 // This is a comment
 `;
+
+const code = `2 + 10 * 8`;
 
 const tokens = tokenize(code);
 
@@ -25,9 +27,14 @@ console.log(
 );
 // console.log(JSON.stringify(tokens, null, "\t"));
 
-const [result, _] = parseCode(tokens);
+// return: [ast, token[]]
+// Tokens (res[1]) should be empty
+const res = parseCode(tokens);
 
 console.log(
   "\n---------------------\nRESULT\n---------------------\n",
-  JSON.stringify(result, null, "  ")
+  JSON.stringify(res[0], null, "  "),
+  JSON.stringify(res[1], null, "  "),
+  res[2] && res[2][0].message,
+  res[2] && res[2][0].stack
 );
