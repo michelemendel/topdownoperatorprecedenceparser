@@ -9,57 +9,35 @@ import { prefixParselets, infixParselets } from "./parseletsLookup.mjs";
 
 // parseCode :: tokens -> int -> [ast, token[]]
 export const parseCode = (tokens, precedence = 0) => {
-  return parsePrefix(consume(tokens), precedence);
+  return parsePrefix([...consume(tokens), precedence]);
 };
 
 // parsePrefix :: token -> token[] -> int -> [ast, token[]]
-export const parsePrefix = ([token, tokens], precedence = 0) => {
+export const parsePrefix = ([token, tokens, precedence]) => {
   const prefix = prefixParselets(token);
 
   if (!prefix) {
     return [
       {},
       tokens,
-      [SyntaxError(`Could not parse ${token.value} of type ${token.type}.`)]
+      SyntaxError(`Could not parse ${token.value} of type ${token.type}.`)
     ];
   }
 
-  let left = prefix.parse(token, tokens);
-
-  //   while (precedence < getPrecedence(tokens)) {
-  //     [left, tokens] = parseInfix(consume(tokens), left);
-  //   }
-  //   return [left, tokens];
-
-  return parseInfix(left, tokens, precedence);
+  return parseInfix([...prefix.parse(token, tokens), precedence]);
 };
 
 // parseInfix :: ast -> token[] -> int -> [ast, token[]]
-const parseInfix = (left, tokens, precedence) => {
-  let token;
+const parseInfix = ([ast, tokens, precedence]) => {
   if (precedence < getPrecedence(tokens)) {
-    [token, tokens] = consume(tokens);
-    [left, tokens] = infixParselets(token).parse(token, tokens, left);
-    return parseInfix(left, tokens, precedence);
+    const parse = ([token, tokens]) =>
+      infixParselets(token).parse(ast, token, tokens);
+
+    return parseInfix([...parse(consume(tokens)), precedence]);
   } else {
-    return [left, tokens];
+    return [ast, tokens];
   }
 };
-
-// parseInfix :: token[] -> int -> ast -> [ast, token[]]
-// const parseInfixX = (left, tokens, precedence) => {
-//   let token;
-//   while (precedence < getPrecedence(tokens)) {
-//     [token, tokens] = consume(tokens);
-//     [left, tokens] = infixParselets(token).parse(token, tokens, left);
-//   }
-//   return [left, tokens];
-// };
-
-// parseInfix :: token -> token[] -> [ast, token[]]
-// const parseInfix1 = ([token, tokens], left) => {
-//   return infixParselets(token).parse(token, tokens, left);
-// };
 
 // consume :: token[] -> [token, token[]]
 export const consume = tokens => {
@@ -69,9 +47,6 @@ export const consume = tokens => {
 // consumeWithExpected :: token -> token[] -> [token, token[]]
 export const consumeWithExpected = (expectedTokenType, tokens) => {
   const token = lookAhead(tokens);
-
-  console.log("---> consumeWithExpected: token", token);
-  //   console.log("---> consumeWithExpected: tokens\n", tokens);
 
   if (token.type !== expectedTokenType) {
     throw new SyntaxError(`[line ${token.lineNr}, column ${token.columnNr}]
@@ -88,8 +63,8 @@ const lookAhead = (tokens, distance = 0) => {
 
 // getPrecedence :: tokens[] -> int
 const getPrecedence = tokens => {
-  const parser = infixParselets(lookAhead(tokens));
-  const prec = !parser ? precedences._ : parser.precedence;
+  const infix = infixParselets(lookAhead(tokens));
+  const prec = !infix ? precedences._ : infix.precedence;
   return prec;
 };
 

@@ -38,7 +38,7 @@ export const infixParselets = token => {
     SUM: { parse: parseInfixOperator, precedence: precedences.SUM },
     MINUS: { parse: parseInfixOperator, precedence: precedences.SUM },
     PRODUCT: { parse: parseInfixOperator, precedence: precedences.PRODUCT },
-    SLASH: { parse: parseInfixOperator, precedence: precedences.PRODUCT },
+    DIVIDE: { parse: parseInfixOperator, precedence: precedences.PRODUCT },
     CARET: {
       parse: parseInfixOperator,
       precedence: precedences.EXPONENT,

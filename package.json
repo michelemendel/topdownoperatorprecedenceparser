@@ -4,12 +4,15 @@
   "description": "",
   "main": "",
   "scripts": {
-    "start": "nodemon main.mjs",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon src/main.mjs",
+    "test": "tap",
+    "test:watch": "tap --watch",
+    "tapconfig": "tap --dump-config"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "tap": "^14.10.5"
   }
 }

@@ -3,7 +3,9 @@ export const precedences = {
   ASSIGNMENT: 1,
   CONDITIONAL: 2,
   SUM: 3,
+  MINUS: 3,
   PRODUCT: 4,
+  DIVIDE: 4,
   EXPONENT: 5,
   PREFIX: 6,
   POSTFIX: 7,
@@ -20,11 +22,11 @@ export const tokenType = {
   R_PAREN: "R_PAREN"
 };
 
-const punctuators = {
+export const punctuators = {
   "+": "SUM",
   "-": "MINUS",
   "*": "PRODUCT",
-  "/": "SLASH",
+  "/": "DIVIDE",
   "^": "CARET",
   ".": "PERIOD",
   "\\": "BACKSLASH",

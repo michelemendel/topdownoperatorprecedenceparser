@@ -14,7 +14,7 @@ const code1 = `
 // This is a comment
 `;
 
-const code = `2 + 10 * 8`;
+const code = `(2 + 4) * (8 + 9)`;
 
 const tokens = tokenize(code);
 
@@ -31,10 +31,13 @@ console.log(
 // Tokens (res[1]) should be empty
 const res = parseCode(tokens);
 
+const error = res[2]
+  ? `\nERROR\n ${res[2].message} "\nSTACK\n" ${res[2].stack}`
+  : "";
+
 console.log(
   "\n---------------------\nRESULT\n---------------------\n",
   JSON.stringify(res[0], null, "  "),
-  JSON.stringify(res[1], null, "  "),
-  res[2] && res[2][0].message,
-  res[2] && res[2][0].stack
+  "\nREST (should be empty):\n" + JSON.stringify(res[1], null, "  "),
+  error
 );
