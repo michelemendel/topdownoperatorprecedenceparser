@@ -1,5 +1,5 @@
 import { tokenize } from "./lexer.mjs";
-import { parseCode } from "./parser.mjs";
+import { parseCode, rootify } from "./parser.mjs";
 
 const splash = () => {
   console.log("\n=========================================");
@@ -32,12 +32,14 @@ const parse = tokens => {
 
 const code = `
 document ABC
-111+222 
-myfn(a)
-333+444
+myfn(a+4)
+document DEF
+9*0 + thFunction(9)
+document GHI
+999 + 1001
 `;
 
-const tokens = tokenize(code);
+const tokens = tokenize(rootify(code));
 splash();
 showTokens(tokens);
 parse(tokens);

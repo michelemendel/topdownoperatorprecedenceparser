@@ -1,6 +1,14 @@
 import { precedences } from "./constants.mjs";
 import { prefixParselets, infixParselets } from "./parseletsLookup.mjs";
 
+// Adds a root document to code
+// rootify :: string -> string
+export const rootify = code => {
+  const rootified = `document root ${code}`;
+  console.log("RRROOOOTTT\n", rootified);
+  return rootified;
+};
+
 // parseCode :: tokens -> int -> [ast, token[]]
 export const parseCode = (tokens, precedence = 0) => {
   return parsePrefix([...consume(tokens), precedence]);
