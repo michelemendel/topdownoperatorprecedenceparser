@@ -1,12 +1,20 @@
 import { precedences, tokenType } from "./constants.mjs";
 import { infixParselets } from "./parseletsLookup.mjs";
-import { consume, parseCode, consumeWithExpected } from "./parser.mjs";
 import {
-  numberExpression,
+  consumeWithExpected,
+  match,
+  matchAndConsume,
+  parseCode
+} from "./parser.mjs";
+import {
+  callExpression,
   nameExpression,
+  numberExpression,
   operatorExpression,
-  prefixExpression
+  prefixExpression,
+  stringExpression
 } from "./expressions.mjs";
+import { consume } from "./parser.mjs";
 
 const _ = {};
 
@@ -23,12 +31,16 @@ export const parseNumber = (token, tokens) => {
 
 // parseName :: token -> token[] -> ast
 export const parseName = (token, tokens) => {
-  //   console.log("---> parseName", token);
-  return nameExpression(token);
+  return [nameExpression(token), tokens];
+};
+
+// parseString :: token -> token[] -> ast
+export const parseString = (token, tokens) => {
+  return [stringExpression(token), tokens];
 };
 
 /**
- * parseInfixOperator ::  token -> token[] -> ast -> [ast, token[]]
+ * parseInfixOperator :: ast -> token -> token[] -> [ast, token[]]
  */
 export const parseInfixOperator = (left, token, tokens) => {
   const [ast, remainingTokens] = parseCode(
@@ -47,18 +59,40 @@ export const parseInfixOperator = (left, token, tokens) => {
 export const parseGroup = (token, tokens) => {
   const [ast, ts] = parseCode(tokens);
   const [_, remainingTokens] = consumeWithExpected(tokenType.R_PAREN, ts);
-
   return [ast, remainingTokens];
+};
+
+/**
+ * parseCall :: ast -> token -> token[] -> [ast, token[]]
+ * ex: fn(1, 2)
+ */
+export const parseCall = (left, token, tokens) => {
+  const [args, remTs] = parseCallRec(
+    !match(tokenType.R_PAREN, tokens),
+    tokens,
+    []
+  );
+
+  return [callExpression(left, args), remTs];
+};
+
+// parseCallRec ::
+export const parseCallRec = (hasArg, tokens, args) => {
+  if (!hasArg) {
+    // Consume the right parenthesis
+    const [t, remTs] = consume(tokens);
+    return [args, remTs];
+  } else {
+    const [ast, ts] = parseCode(tokens);
+    // Consume the comma
+    const [hasArgs, t, remTs] = matchAndConsume(tokenType.COMMA, ts);
+    return parseCallRec(hasArgs, remTs, [...args, ast]);
+  }
 };
 
 //
 export const parseIdentifier = token => {
   console.log("---> parseIdentifier");
-};
-
-//
-export const parseString = token => {
-  console.log("---> parseString");
 };
 
 //
@@ -69,12 +103,4 @@ export const parseAssignment = token => {
 //
 export const parseConditional = token => {
   console.log("---> parseAssignment");
-};
-
-// ex: fn(1, 2)
-export const parseCall = (token, tokens, left) => {
-  console.log("---> parseCall");
-  //   const expression = parseCode(token);
-  //   consume(tokens, tokenType.R_PAREN);
-  //   return expression;
 };

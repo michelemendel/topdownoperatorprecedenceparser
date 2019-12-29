@@ -73,7 +73,7 @@ const wanted2 = {
 
 const wantedRemains2 = [
   {
-    type: "NAME",
+    type: "PERCENT",
     value: "%",
     lineNr: 0,
     columnNr: 2
@@ -185,3 +185,58 @@ const wanted4 = {
 const wantedRemains4 = [];
 
 standardSuccess(input4, wanted4, wantedRemains4);
+
+/************************************************************
+ * Testing a function call
+ * result: success
+ */
+
+const input5 = `myfn()`;
+
+const wanted5 = {
+  type: "CALL",
+  value: "myfn",
+  children: []
+};
+
+const wantedRemains5 = [];
+
+standardSuccess(input5, wanted5, wantedRemains5);
+
+const input6 = `myfn(a)`;
+
+const wanted6 = {
+  type: "CALL",
+  value: "myfn",
+  children: [
+    {
+      type: "NAME",
+      value: "a"
+    }
+  ]
+};
+
+const wantedRemains6 = [];
+
+standardSuccess(input6, wanted6, wantedRemains6);
+
+const input7 = `myfn(a, b)`;
+
+const wanted7 = {
+  type: "CALL",
+  value: "myfn",
+  children: [
+    {
+      type: "NAME",
+      value: "a"
+    },
+    {
+      type: "NAME",
+      value: "b"
+    }
+  ]
+};
+
+const wantedRemains7 = [];
+
+standardSuccess(input7, wanted7, wantedRemains7);

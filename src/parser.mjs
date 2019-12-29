@@ -1,12 +1,6 @@
 import { precedences } from "./constants.mjs";
 import { prefixParselets, infixParselets } from "./parseletsLookup.mjs";
 
-// export const result = {
-//     ast:{},
-//     tokens:[],
-//     errors:[]
-// }
-
 // parseCode :: tokens -> int -> [ast, token[]]
 export const parseCode = (tokens, precedence = 0) => {
   return parsePrefix([...consume(tokens), precedence]);
@@ -29,6 +23,8 @@ export const parsePrefix = ([token, tokens, precedence]) => {
 
 // parseInfix :: ast -> token[] -> int -> [ast, token[]]
 const parseInfix = ([ast, tokens, precedence]) => {
+  //   console.log("---pinfix", precedence, getPrecedence(tokens), ast);
+
   if (precedence < getPrecedence(tokens)) {
     const parse = ([token, tokens]) =>
       infixParselets(token).parse(ast, token, tokens);
@@ -61,6 +57,28 @@ const lookAhead = (tokens, distance = 0) => {
   return tokens[0] ? tokens[0] : [];
 };
 
+// matchAndConsume :: token -> token[] -> boolean
+export const match = (expectedTokenType, tokens) => {
+  return lookAhead(tokens).type === expectedTokenType;
+};
+
+// matchAndConsume :: token -> token[] -> [boolean, token, token[]]
+export const matchAndConsume = (expectedTokenType, tokens) => {
+  return [lookAhead(tokens).type === expectedTokenType, ...consume(tokens)];
+};
+
+// matchAndConsumeSkipSeparator :: token -> token[] -> [boolean, token, token[]]
+// Skips the separator
+export const matchAndConsumeSkipSeparator = (separator, tokens) => {
+  const isMatch = lookAhead(tokens).type === separator;
+  if (isMatch) {
+    const [t, remTs] = consume(tokens);
+    return [true, ...consume(remTs)];
+  } else {
+    return [false, ...consume(tokens)];
+  }
+};
+
 // getPrecedence :: tokens[] -> int
 const getPrecedence = tokens => {
   const infix = infixParselets(lookAhead(tokens));
@@ -68,14 +86,8 @@ const getPrecedence = tokens => {
   return prec;
 };
 
-// match :: token -> token[] -> boolean
-const match = (expectedTokenType, tokens) => {
-  const token = lookAhead(tokens);
-
-  if (token.type != expectedTokenType) {
-    return false;
-  }
-
-  consume(tokens);
-  return true;
+export const listTokens = tokens => {
+  return Array.isArray(tokens)
+    ? tokens.map(t => `${t.type}, ${t.value}`)
+    : "no tokens";
 };

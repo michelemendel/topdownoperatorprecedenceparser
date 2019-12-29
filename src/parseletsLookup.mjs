@@ -18,7 +18,6 @@ export const prefixParselets = token => {
     NAME: { parse: parseName, precedence: precedences._ },
     STRING: { parse: parseString, precedence: precedences._ },
     IDENTIFIER: { parse: parseIdentifier, precedence: precedences._ },
-    ASSIGN: { parse: parseAssignment, precedence: precedences._ },
     QUESTION: { parse: parseConditional, precedence: precedences._ },
     L_PAREN: { parse: parseGroup, precedence: precedences._ },
 
@@ -34,7 +33,6 @@ export const prefixParselets = token => {
 
 export const infixParselets = token => {
   return {
-    L_PAREN: { parse: parseCall, precedence: precedences._ },
     SUM: { parse: parseInfixOperator, precedence: precedences.SUM },
     MINUS: { parse: parseInfixOperator, precedence: precedences.SUM },
     PRODUCT: { parse: parseInfixOperator, precedence: precedences.PRODUCT },
@@ -43,6 +41,8 @@ export const infixParselets = token => {
       parse: parseInfixOperator,
       precedence: precedences.EXPONENT,
       rightAssoc: true
-    }
+    },
+    L_PAREN: { parse: parseCall, precedence: precedences.CALL },
+    ASSIGN: { parse: parseAssignment, precedence: precedences._ }
   }[token.type];
 };

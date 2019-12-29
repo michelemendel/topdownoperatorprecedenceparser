@@ -1,43 +1,53 @@
 import { tokenize } from "./lexer.mjs";
 import { parseCode } from "./parser.mjs";
 
-const code1 = `
-2 * 1440 - 909 % 888
-// ( HELLO BYE )
-//Johnny B
-//"hello"
-//let qwe = (-2+-7)
-//widget arne #jonhson @nr1 {
-//  abx: 123 / 999
-//}
-//let fn = function() {};
-// This is a comment
-`;
+const splash = () => {
+  console.log("\n=========================================");
+  console.log("================= START =================");
+  console.log("=========================================\n");
+};
 
-const code = `(2 + 4) * (8 + 9)`;
+const showTokens = tokens => {
+  console.log("\n========== TOKENS\n");
+  console.log(
+    "tokens",
+    tokens
+    //   tokens.map(t => `${t.type}, ${t.value}`)
+  );
+  // console.log(JSON.stringify(tokens, null, "\t"));
+};
+
+const parse = tokens => {
+  const [ast, remainingTokens, errors] = parseCode(tokens);
+
+  console.log("\n========== AST\n");
+  console.log(JSON.stringify(ast, null, "  "));
+  console.log("\n========== REMAINING TOKENS (should be empty)\n");
+  console.log(JSON.stringify(remainingTokens, null, "  "));
+  console.log("\n========== ERRORS\n");
+  console.log(
+    errors ? `\nERROR\n ${errors.message} "\nSTACK\n" ${errors.stack}` : ""
+  );
+};
+
+const code = `myfn(a b)`;
 
 const tokens = tokenize(code);
+splash();
+showTokens(tokens);
+parse(tokens);
 
-console.log("\n===========================================");
-console.log("===========================================");
-console.log(
-  "tokens",
-  tokens
-  //   tokens.map(t => `${t.type}, ${t.value}`)
-);
-// console.log(JSON.stringify(tokens, null, "\t"));
-
-// return: [ast, token[]]
-// Tokens (res[1]) should be empty
-const res = parseCode(tokens);
-
-const error = res[2]
-  ? `\nERROR\n ${res[2].message} "\nSTACK\n" ${res[2].stack}`
-  : "";
-
-console.log(
-  "\n---------------------\nRESULT\n---------------------\n",
-  JSON.stringify(res[0], null, "  "),
-  "\nREST (should be empty):\n" + JSON.stringify(res[1], null, "  "),
-  error
-);
+// -----------------------------------------------------------
+// const code1 = `
+// 2 * 1440 - 909 % 888
+// // ( HELLO BYE )
+// //Johnny B
+// //"hello"
+// //let qwe = (-2+-7)
+// //widget arne #jonhson @nr1 {
+// //  abx: 123 / 999
+// //}
+// //let fn = function() {};
+// // This is a comment
+// // (2 + 4) * (8 + 9)
+// `;

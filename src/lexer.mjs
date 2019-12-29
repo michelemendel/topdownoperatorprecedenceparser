@@ -34,12 +34,12 @@ export function tokenize(source) {
   const result = [];
 
   lines.forEach(function(line, lineNr) {
-    const rx_token = /(\u0020+)|(\/\/.*)|([@#%a-zA-Z][a-zA-Z_0-9]*)|(\d+(?:\.\d+)?(?:[eE][+\-]?\d+)?)|("(?:[^"\\]|\\(?:[nr"\\]|u[0-9a-fA-F]{4}))*")|([(){}\[\]?.,:;~*\/]|&&?|\|\|?|[+\-<>]=?|[!=](?:==)?)/y;
+    const rx_token = /(\u0020+)|(\/\/.*)|((?:@|#)?[a-zA-Z][a-zA-Z_0-9]*)|(\d+(?:\.\d+)?(?:[eE][+\-]?\d+)?)|("(?:[^"\\]|\\(?:[nr"\\]|u[0-9a-fA-F]{4}))*")|([(){}\[\]?.,:;~*%\/]|&&?|\|\|?|[+\-<>]=?|[!=](?:==)?)/y;
 
     // Capture Group
     // [1]  Whitespace
     // [2]  Comment
-    // [3]  Name
+    // [3]  Name including identifier (@) and reference (#)
     // [4]  Number
     // [5]  String
     // [6]  Punctuator
@@ -63,9 +63,9 @@ export function tokenize(source) {
       if (!captives) {
         throw new SyntaxError("line " + lineNr + " column " + columnNr);
       } else if (captives[1]) {
-        //Intentionalluy ignore whitespace
+        //Intentionally ignore whitespace
       } else if (captives[2]) {
-        //Intentionalluy ignore comment
+        //Intentionally ignore comment
       } else if (captives[3]) {
         makeToken(getType(captives[3]), captives[3]);
       } else if (captives[4]) {

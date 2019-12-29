@@ -1,5 +1,6 @@
 export const precedences = {
   _: 0,
+  CALL: 1,
   ASSIGNMENT: 1,
   CONDITIONAL: 2,
   SUM: 3,
@@ -19,7 +20,9 @@ export const tokenType = {
   L_BRACKET: "L_BRACKET",
   R_BRACKET: "R_BRACKET",
   L_PAREN: "L_PAREN",
-  R_PAREN: "R_PAREN"
+  R_PAREN: "R_PAREN",
+  COMMA: "COMMA",
+  CALL: "CALL"
 };
 
 export const punctuators = {
