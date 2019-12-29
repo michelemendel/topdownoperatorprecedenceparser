@@ -7,6 +7,7 @@ import {
   parseCode
 } from "./parser.mjs";
 import {
+  documentExpression,
   callExpression,
   nameExpression,
   numberExpression,
@@ -17,6 +18,23 @@ import {
 import { consume } from "./parser.mjs";
 
 const _ = {};
+
+// parseDocument :: token -> token[] -> [ast, token[]]
+export const parseDocument = (token, tokens) => {
+  const [name, remainingTokens] = consume(tokens);
+  const [asts, ts] = parseDocumentRec(remainingTokens, []);
+  return [documentExpression(token, name, asts), ts];
+};
+
+// parseDocumentRec :: token -> ast[] -> [ast[], token[]]
+export const parseDocumentRec = (tokens, asts) => {
+  if (tokens.length > 0) {
+    const [ast, ts] = parseCode(tokens);
+    return parseDocumentRec(ts, [...asts, ast]);
+  } else {
+    return [asts, tokens];
+  }
+};
 
 // parsePrefixOperator :: token -> token[] -> [ast, token[]]
 export const parsePrefixOperator = (token, tokens) => {
@@ -81,12 +99,20 @@ export const parseCallRec = (hasArg, tokens, args) => {
   if (!hasArg) {
     // Consume the right parenthesis
     const [t, remTs] = consume(tokens);
+
+    // todo: Error if t != R_PAREN && tokens != [R_PAREN]
+
     return [args, remTs];
   } else {
     const [ast, ts] = parseCode(tokens);
     // Consume the comma
     const [hasArgs, t, remTs] = matchAndConsume(tokenType.COMMA, ts);
-    return parseCallRec(hasArgs, remTs, [...args, ast]);
+
+    console.log("\n--- hasArgs", hasArgs);
+    console.log("--- ts", ts);
+    console.log("--- remTs", remTs);
+
+    return parseCallRec(hasArgs, hasArgs ? remTs : ts, [...args, ast]);
   }
 };
 

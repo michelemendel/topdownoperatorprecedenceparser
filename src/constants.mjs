@@ -22,7 +22,8 @@ export const tokenType = {
   L_PAREN: "L_PAREN",
   R_PAREN: "R_PAREN",
   COMMA: "COMMA",
-  CALL: "CALL"
+  CALL: "CALL",
+  DOCUMENT: "DOCUMENT"
 };
 
 export const punctuators = {
@@ -56,12 +57,14 @@ export const punctuators = {
   "==": "DOUBLE_EQUALS"
 };
 
-const keywords = ["let", "function"];
+const keywords = ["document", "let", "function"];
 
 export const getPunctuatorName = op => punctuators[op];
 
 export const getType = name =>
-  name[0] === "#"
+  name === "document"
+    ? "DOCUMENT"
+    : name[0] === "#"
     ? "IDENTIFIER"
     : name[0] === "@"
     ? "REFERENCE"

@@ -1,5 +1,6 @@
 import { precedences } from "./constants.mjs";
 import {
+  parseDocument,
   parseNumber,
   parseName,
   parseString,
@@ -14,6 +15,7 @@ import {
 
 export const prefixParselets = token => {
   return {
+    DOCUMENT: { parse: parseDocument, precedence: precedences._ },
     NUMBER: { parse: parseNumber, precedence: precedences._ },
     NAME: { parse: parseName, precedence: precedences._ },
     STRING: { parse: parseString, precedence: precedences._ },

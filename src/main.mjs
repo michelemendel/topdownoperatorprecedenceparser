@@ -30,7 +30,12 @@ const parse = tokens => {
   );
 };
 
-const code = `myfn(a b)`;
+const code = `
+document ABC
+111+222 
+myfn(a)
+333+444
+`;
 
 const tokens = tokenize(code);
 splash();
