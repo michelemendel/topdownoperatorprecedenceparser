@@ -4,9 +4,7 @@ import { prefixParselets, infixParselets } from "./parseletsLookup.mjs";
 // Adds a root document to code
 // rootify :: string -> string
 export const rootify = code => {
-  const rootified = `document root ${code}`;
-  console.log("RRROOOOTTT\n", rootified);
-  return rootified;
+  return `document root ${code}`;
 };
 
 // parseCode :: tokens -> int -> [ast, token[]]
@@ -14,7 +12,9 @@ export const parseCode = (tokens, precedence = 0) => {
   return parsePrefix([...consume(tokens), precedence]);
 };
 
-// parsePrefix :: token -> token[] -> int -> [ast, token[]]
+/**
+ * parsePrefix :: token -> token[] -> int -> [ast, token[]]
+ */
 export const parsePrefix = ([token, tokens, precedence]) => {
   const prefix = prefixParselets(token);
 
@@ -26,16 +26,23 @@ export const parsePrefix = ([token, tokens, precedence]) => {
     ];
   }
 
+  console.log("\n--- prefix", prefix);
+
   return parseInfix([...prefix.parse(token, tokens), precedence]);
 };
 
-// parseInfix :: ast -> token[] -> int -> [ast, token[]]
+/**
+ * parseInfix :: ast -> token[] -> int -> [ast, token[]]
+ */
 const parseInfix = ([ast, tokens, precedence]) => {
-  //   console.log("---pinfix", precedence, getPrecedence(tokens), ast);
+  console.log("\n--- parseInfix", precedence, "\n", tokens, "\n", ast);
 
   if (precedence < getPrecedence(tokens)) {
-    const parse = ([token, tokens]) =>
-      infixParselets(token).parse(ast, token, tokens);
+    const parse = ([token, tokens]) => {
+      console.log("\n--- infix", infixParselets(token));
+
+      return infixParselets(token).parse(ast, token, tokens);
+    };
 
     return parseInfix([...parse(consume(tokens)), precedence]);
   } else {
@@ -73,18 +80,6 @@ export const match = (expectedTokenType, tokens) => {
 // matchAndConsume :: token -> token[] -> [boolean, token, token[]]
 export const matchAndConsume = (expectedTokenType, tokens) => {
   return [lookAhead(tokens).type === expectedTokenType, ...consume(tokens)];
-};
-
-// matchAndConsumeSkipSeparator :: token -> token[] -> [boolean, token, token[]]
-// Skips the separator
-export const matchAndConsumeSkipSeparator = (separator, tokens) => {
-  const isMatch = lookAhead(tokens).type === separator;
-  if (isMatch) {
-    const [t, remTs] = consume(tokens);
-    return [true, ...consume(remTs)];
-  } else {
-    return [false, ...consume(tokens)];
-  }
 };
 
 // getPrecedence :: tokens[] -> int

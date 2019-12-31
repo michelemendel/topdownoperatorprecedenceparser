@@ -12,7 +12,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.2",
-    "tap": "^14.10.5"
+    "nodemon": "2.0.2",
+    "tap": "14.10.5"
+  },
+  "dependencies": {
+    "sanctuary-either": "2.0.0"
   }
 }

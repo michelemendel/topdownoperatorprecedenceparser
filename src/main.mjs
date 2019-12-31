@@ -7,6 +7,9 @@ const splash = () => {
   console.log("=========================================\n");
 };
 
+/**
+ *
+ */
 const showTokens = tokens => {
   console.log("\n========== TOKENS\n");
   console.log(
@@ -17,6 +20,9 @@ const showTokens = tokens => {
   // console.log(JSON.stringify(tokens, null, "\t"));
 };
 
+/**
+ *
+ */
 const parse = tokens => {
   const [ast, remainingTokens, errors] = parseCode(tokens);
 
@@ -31,12 +37,8 @@ const parse = tokens => {
 };
 
 const code = `
-document ABC
-myfn(a+4)
-document DEF
-9*0 + thFunction(9)
-document GHI
-999 + 1001
+a : 33 / 3 = 999
+b : "hello"
 `;
 
 const tokens = tokenize(rootify(code));

@@ -7,12 +7,14 @@ import {
   parseCode
 } from "./parser.mjs";
 import {
+  assignmentExpression,
   documentExpression,
   callExpression,
   nameExpression,
   numberExpression,
   operatorExpression,
   prefixExpression,
+  propertyExpression,
   stringExpression
 } from "./expressions.mjs";
 import { consume } from "./parser.mjs";
@@ -94,7 +96,9 @@ export const parseCall = (left, token, tokens) => {
   return [callExpression(left, args), remTs];
 };
 
-// parseCallRec ::
+/**
+ * parseCallRec :: boolean -> token[] -> token[] -> [token[], token[]]
+ */
 export const parseCallRec = (hasArg, tokens, args) => {
   if (!hasArg) {
     // Consume the right parenthesis
@@ -107,26 +111,48 @@ export const parseCallRec = (hasArg, tokens, args) => {
     const [ast, ts] = parseCode(tokens);
     // Consume the comma
     const [hasArgs, t, remTs] = matchAndConsume(tokenType.COMMA, ts);
-
-    console.log("\n--- hasArgs", hasArgs);
-    console.log("--- ts", ts);
-    console.log("--- remTs", remTs);
-
     return parseCallRec(hasArgs, hasArgs ? remTs : ts, [...args, ast]);
   }
 };
 
-//
-export const parseIdentifier = token => {
-  console.log("---> parseIdentifier");
+/**
+ * parseAssignment :: ast -> token -> token[] -> [ast, token[]]
+ * ex: let a = 1
+ */
+export const parseAssignment = (token, tokens) => {
+  const [identifier, ts] = consume(tokens);
+  const [isEqualChar, equalsChar, tsOnRHS] = matchAndConsume(
+    tokenType.EQUALS,
+    ts
+  );
+
+  if (!isEqualChar) {
+    throw new SyntaxError(`[line ${equalsChar.lineNr}, column ${equalsChar.columnNr}]
+      Expected token ${tokenType.EQUALS} and found ${equalsChar.type}`);
+  }
+
+  const [rhs, remTs] = parseCode(tsOnRHS, precedences.EQUALS);
+
+  return [assignmentExpression(identifier, rhs), remTs];
 };
 
-//
-export const parseAssignment = token => {
-  console.log("---> parseAssignment");
+/**
+ * parseProperty :: ast -> token -> token[] -> [ast, token[]]
+ */
+export const parseProperty = (key, colonChar, tokens) => {
+  if (colonChar === tokenType.COLON) {
+    throw new SyntaxError(`[line ${colonChar.lineNr}, column ${colonChar.columnNr}]
+      Expected token ${tokenType.COLON} and found ${colonChar.type}`);
+  }
+
+  const [rhs, remTs] = parseCode(tokens, precedences.EQUALS);
+
+  return [propertyExpression(key, rhs), remTs];
 };
 
-//
+/**
+ *
+ */
 export const parseConditional = token => {
   console.log("---> parseAssignment");
 };

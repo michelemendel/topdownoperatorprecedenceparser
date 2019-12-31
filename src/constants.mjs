@@ -1,29 +1,33 @@
 export const precedences = {
   _: 0,
   CALL: 1,
-  ASSIGNMENT: 1,
   CONDITIONAL: 2,
+  EQUALS: 2,
+  COLON: 2,
   SUM: 3,
   MINUS: 3,
   PRODUCT: 4,
   DIVIDE: 4,
   EXPONENT: 5,
   PREFIX: 6,
-  POSTFIX: 7,
-  CALL: 8
+  POSTFIX: 7
 };
 
 export const tokenType = {
   _: "_",
-  L_BRACE: "L_BRACE",
-  R_BRACE: "R_BRACE",
-  L_BRACKET: "L_BRACKET",
-  R_BRACKET: "R_BRACKET",
-  L_PAREN: "L_PAREN",
-  R_PAREN: "R_PAREN",
-  COMMA: "COMMA",
+  ASSIGNMENT: "ASSIGNMENT",
   CALL: "CALL",
-  DOCUMENT: "DOCUMENT"
+  COMMA: "COMMA",
+  COLON: "COLON",
+  DOCUMENT: "DOCUMENT",
+  EQUALS: "EQUALS",
+  L_BRACE: "L_BRACE",
+  L_BRACKET: "L_BRACKET",
+  L_PAREN: "L_PAREN",
+  PROPERTY: "PROPERTY",
+  R_BRACE: "R_BRACE",
+  R_BRACKET: "R_BRACKET",
+  R_PAREN: "R_PAREN"
 };
 
 export const punctuators = {
@@ -34,7 +38,7 @@ export const punctuators = {
   "^": "CARET",
   ".": "PERIOD",
   "\\": "BACKSLASH",
-  ":": "COLON",
+  ":": tokenType.COLON,
   "%": "PERCENT",
   "|": "PIPE",
   "!": "BANG",
@@ -53,21 +57,19 @@ export const punctuators = {
   "}": tokenType.R_BRACE,
   "[": tokenType.L_BRACKET,
   "]": tokenType.R_BRACKET,
-  "=": "EQUALS",
+  "=": tokenType.EQUALS,
   "==": "DOUBLE_EQUALS"
 };
-
-const keywords = ["document", "let", "function"];
 
 export const getPunctuatorName = op => punctuators[op];
 
 export const getType = name =>
   name === "document"
     ? "DOCUMENT"
+    : name === "let"
+    ? "ASSIGNMENT"
     : name[0] === "#"
     ? "IDENTIFIER"
     : name[0] === "@"
     ? "REFERENCE"
-    : keywords.includes(name)
-    ? "KEYWORD"
     : "NAME";

@@ -8,6 +8,9 @@ import { punctuators } from "../src/constants.mjs";
  * 1. input
  * 2. wanted - the AST
  * 3. wantedRemains - the rest of the tokens (should be empty if everything is ok)
+ *
+ * NOTE! The inputs are not run through the rootify function
+ *
  */
 
 const standardSuccess = (input, wanted, wantedRemains, errorMsg) => {
@@ -240,3 +243,74 @@ const wanted7 = {
 const wantedRemains7 = [];
 
 standardSuccess(input7, wanted7, wantedRemains7);
+
+/************************************************************
+ * Testing assignment
+ * result: success
+ */
+
+const input8 = `let a = 111 + 555`;
+
+const wanted8 = {
+  type: "ASSIGNMENT",
+  value: "a",
+  children: {
+    type: "SUM",
+    value: "+",
+    children: [
+      {
+        type: "NUMBER",
+        value: 111
+      },
+      {
+        type: "NUMBER",
+        value: 555
+      }
+    ]
+  }
+};
+
+const wantedRemains8 = [];
+
+standardSuccess(input8, wanted8, wantedRemains8);
+
+/************************************************************
+ * Testing assignment
+ * result: failure
+ */
+
+// const input8 = `let a & 111 + 555`;
+
+// const wanted8 = {
+//   type: "ASSIGNMENT",
+//   value: "a",
+//   children: {
+//     type: "SUM",
+//     value: "+",
+//     children: [
+//       {
+//         type: "NUMBER",
+//         value: 111
+//       },
+//       {
+//         type: "NUMBER",
+//         value: 555
+//       }
+//     ]
+//   }
+// };
+
+// const wantedRemains8 = [];
+
+// // standardSuccess(input8, wanted8, wantedRemains8);
+// const standardSuccess = (input, wanted, wantedRemains, errorMsg) => {
+//   errorMsg = errorMsg || "the remains should be empty";
+
+//   t.test(input, t => {
+//     const tokens = tokenize(input);
+//     const [found, foundRemains] = parseCode(tokens);
+//     t.same(found, wanted);
+//     t.same(foundRemains, wantedRemains, errorMsg);
+//     t.end();
+//   });
+// };

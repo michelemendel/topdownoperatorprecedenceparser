@@ -75,3 +75,25 @@ export const callExpression = (left, args) => {
     // columnNr: token.columnNr,
   };
 };
+
+// assignmentExpression :: token -> expression
+export const assignmentExpression = (left, equalsExpression) => {
+  return {
+    type: tokenType.ASSIGNMENT,
+    value: left.value,
+    children: equalsExpression
+    // lineNr: token.lineNr,
+    // columnNr: token.columnNr,
+  };
+};
+
+// propertyExpression :: token -> expression
+export const propertyExpression = (left, equalsExpression) => {
+  return {
+    type: tokenType.PROPERTY,
+    value: left.value,
+    children: equalsExpression
+    // lineNr: token.lineNr,
+    // columnNr: token.columnNr,
+  };
+};

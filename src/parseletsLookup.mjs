@@ -1,16 +1,16 @@
 import { precedences } from "./constants.mjs";
 import {
-  parseDocument,
-  parseNumber,
-  parseName,
-  parseString,
-  parseIdentifier,
   parseAssignment,
-  parseConditional,
-  parseGroup,
-  parsePrefixOperator,
   parseCall,
-  parseInfixOperator
+  parseConditional,
+  parseDocument,
+  parseGroup,
+  parseProperty,
+  parseInfixOperator,
+  parseName,
+  parseNumber,
+  parsePrefixOperator,
+  parseString
 } from "./parselets.mjs";
 
 export const prefixParselets = token => {
@@ -19,7 +19,7 @@ export const prefixParselets = token => {
     NUMBER: { parse: parseNumber, precedence: precedences._ },
     NAME: { parse: parseName, precedence: precedences._ },
     STRING: { parse: parseString, precedence: precedences._ },
-    IDENTIFIER: { parse: parseIdentifier, precedence: precedences._ },
+    ASSIGNMENT: { parse: parseAssignment, precedence: precedences._ },
     QUESTION: { parse: parseConditional, precedence: precedences._ },
     L_PAREN: { parse: parseGroup, precedence: precedences._ },
 
@@ -45,6 +45,7 @@ export const infixParselets = token => {
       rightAssoc: true
     },
     L_PAREN: { parse: parseCall, precedence: precedences.CALL },
-    ASSIGN: { parse: parseAssignment, precedence: precedences._ }
+    EQUALS: { parse: parseInfixOperator, precedence: precedences.EQUALS },
+    COLON: { parse: parseProperty, precedence: precedences.COLON }
   }[token.type];
 };

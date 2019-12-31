@@ -8,7 +8,11 @@
 - https://github.com/munificent/bantam
 - http://crockford.com/javascript/tdop/tdop.html
 
+## Libraries
+
 - https://node-tap.org/
+- https://www.npmjs.com/package/sanctuary-either
+  - https://github.com/sanctuary-js/sanctuary-either
 
 ## To DO
 
