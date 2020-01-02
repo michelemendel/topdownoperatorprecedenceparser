@@ -8,7 +8,7 @@ import {
 } from "./parser.mjs";
 import {
   assignmentExpression,
-  documentExpression,
+  entityExpression,
   callExpression,
   nameExpression,
   numberExpression,
@@ -25,7 +25,7 @@ const _ = {};
 export const parseDocument = (token, tokens) => {
   const [name, remainingTokens] = consume(tokens);
   const [asts, ts] = parseDocumentRec(remainingTokens, []);
-  return [documentExpression(token, name, asts), ts];
+  return [entityExpression(tokenType.DOCUMENT, name, asts), ts];
 };
 
 // parseDocumentRec :: token -> ast[] -> [ast[], token[]]
@@ -35,6 +35,36 @@ export const parseDocumentRec = (tokens, asts) => {
     return parseDocumentRec(ts, [...asts, ast]);
   } else {
     return [asts, tokens];
+  }
+};
+
+/**
+ * parseEntity :: token -> token -> token[] -> [ast, token[]]
+ * ex1: myEnt {1 + 2}
+ */
+export const parseEntity = (signature, token, tokens) => {
+  const [asts, ts] = parseEntityRec(tokens, []);
+  return [entityExpression(tokenType.ENTITY, signature, asts), ts];
+};
+
+/**
+ * parseEntityPrefix :: token -> token[] -> [ast, token[]]
+ * ex1: let m = {1 + 2}
+ * ex2: {1 + 2}
+ */
+export const parseEntityPrefix = (token, tokens) => {
+  const [asts, ts] = parseEntityRec(tokens, []);
+  return [entityExpression(tokenType.ENTITY, "", asts), ts];
+};
+
+// parseEntityRec :: token -> ast[] -> [ast[], token[]]
+export const parseEntityRec = (tokens, asts) => {
+  if (tokens.length > 1) {
+    const [ast, ts] = parseCode(tokens);
+    return parseEntityRec(ts, [...asts, ast]);
+  } else {
+    const [_, ts] = consumeWithExpected(tokenType.R_BRACE, tokens);
+    return [asts, ts];
   }
 };
 
@@ -60,7 +90,7 @@ export const parseString = (token, tokens) => {
 };
 
 /**
- * parseInfixOperator :: ast -> token -> token[] -> [ast, token[]]
+ * parseInfixOperator :: token -> token -> token[] -> [ast, token[]]
  */
 export const parseInfixOperator = (left, token, tokens) => {
   const [ast, remainingTokens] = parseCode(
@@ -83,7 +113,7 @@ export const parseGroup = (token, tokens) => {
 };
 
 /**
- * parseCall :: ast -> token -> token[] -> [ast, token[]]
+ * parseCall :: token -> token -> token[] -> [ast, token[]]
  * ex: fn(1, 2)
  */
 export const parseCall = (left, token, tokens) => {
@@ -116,7 +146,7 @@ export const parseCallRec = (hasArg, tokens, args) => {
 };
 
 /**
- * parseAssignment :: ast -> token -> token[] -> [ast, token[]]
+ * parseAssignment :: token -> token[] -> [ast, token[]]
  * ex: let a = 1
  */
 export const parseAssignment = (token, tokens) => {
@@ -137,7 +167,8 @@ export const parseAssignment = (token, tokens) => {
 };
 
 /**
- * parseProperty :: ast -> token -> token[] -> [ast, token[]]
+ * parseProperty :: token -> token -> token[] -> [ast, token[]]
+ * myKey : myValue
  */
 export const parseProperty = (key, colonChar, tokens) => {
   if (colonChar === tokenType.COLON) {
@@ -154,5 +185,5 @@ export const parseProperty = (key, colonChar, tokens) => {
  *
  */
 export const parseConditional = token => {
-  console.log("---> parseAssignment");
+  console.log("\n---> parseAssignment");
 };

@@ -1,9 +1,9 @@
 import { tokenType } from "./constants.mjs";
 
-// documentExpression :: token -> ast -> expression
-export const documentExpression = (token, name, right) => {
+// documentExpression :: tokenType -> ast -> expression
+export const entityExpression = (tokenType, name, right) => {
   return {
-    type: token.type,
+    type: tokenType,
     value: name,
     children: right
     // lineNr: token.lineNr,

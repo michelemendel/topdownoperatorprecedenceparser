@@ -37,8 +37,11 @@ const parse = tokens => {
 };
 
 const code = `
-a : 33 / 3 = 999
-b : "hello"
+john billie #hashID @mergeMe @mergeMeToo {
+    // let v = velocity +99
+    x : y
+    // xxxxxxxx : 4 + 7 * 8
+}
 `;
 
 const tokens = tokenize(rootify(code));

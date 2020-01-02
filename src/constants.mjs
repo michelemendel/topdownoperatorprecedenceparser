@@ -20,6 +20,7 @@ export const tokenType = {
   COMMA: "COMMA",
   COLON: "COLON",
   DOCUMENT: "DOCUMENT",
+  ENTITY: "ENTITY",
   EQUALS: "EQUALS",
   L_BRACE: "L_BRACE",
   L_BRACKET: "L_BRACKET",

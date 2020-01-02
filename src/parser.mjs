@@ -4,7 +4,7 @@ import { prefixParselets, infixParselets } from "./parseletsLookup.mjs";
 // Adds a root document to code
 // rootify :: string -> string
 export const rootify = code => {
-  return `document root ${code}`;
+  return `document #Root ${code}`;
 };
 
 // parseCode :: tokens -> int -> [ast, token[]]
@@ -26,7 +26,7 @@ export const parsePrefix = ([token, tokens, precedence]) => {
     ];
   }
 
-  console.log("\n--- prefix", prefix);
+  //   console.log("\n--- prefix", prefix);
 
   return parseInfix([...prefix.parse(token, tokens), precedence]);
 };
@@ -35,12 +35,19 @@ export const parsePrefix = ([token, tokens, precedence]) => {
  * parseInfix :: ast -> token[] -> int -> [ast, token[]]
  */
 const parseInfix = ([ast, tokens, precedence]) => {
-  console.log("\n--- parseInfix", precedence, "\n", tokens, "\n", ast);
+  //   console.log(
+  //     "\n--- parseInfix",
+  //     precedence,
+  //     getPrecedence(tokens),
+  //     "\n",
+  //     tokens,
+  //     "\n",
+  //     ast
+  //   );
 
   if (precedence < getPrecedence(tokens)) {
     const parse = ([token, tokens]) => {
       console.log("\n--- infix", infixParselets(token));
-
       return infixParselets(token).parse(ast, token, tokens);
     };
 

@@ -4,6 +4,8 @@ import {
   parseCall,
   parseConditional,
   parseDocument,
+  parseEntity,
+  parseEntityPrefix,
   parseGroup,
   parseProperty,
   parseInfixOperator,
@@ -22,6 +24,7 @@ export const prefixParselets = token => {
     ASSIGNMENT: { parse: parseAssignment, precedence: precedences._ },
     QUESTION: { parse: parseConditional, precedence: precedences._ },
     L_PAREN: { parse: parseGroup, precedence: precedences._ },
+    L_BRACE: { parse: parseEntityPrefix, precedence: precedences._ },
 
     SUM: { parse: parsePrefixOperator, precedence: precedences.PREFIX },
     MINUS: {
@@ -45,6 +48,7 @@ export const infixParselets = token => {
       rightAssoc: true
     },
     L_PAREN: { parse: parseCall, precedence: precedences.CALL },
+    L_BRACE: { parse: parseEntity, precedence: precedences.CALL },
     EQUALS: { parse: parseInfixOperator, precedence: precedences.EQUALS },
     COLON: { parse: parseProperty, precedence: precedences.COLON }
   }[token.type];
