@@ -10,12 +10,12 @@ import {
   assignmentExpression,
   entityExpression,
   callExpression,
-  nameExpression,
-  numberExpression,
+  nnisExpression,
   operatorExpression,
   prefixExpression,
   propertyExpression,
-  stringExpression
+  referenceExpression,
+  siggyExpression
 } from "./expressions.mjs";
 import { consume } from "./parser.mjs";
 
@@ -59,12 +59,12 @@ export const parseEntityPrefix = (token, tokens) => {
 
 // parseEntityRec :: token -> ast[] -> [ast[], token[]]
 export const parseEntityRec = (tokens, asts) => {
-  if (tokens.length > 1) {
-    const [ast, ts] = parseCode(tokens);
-    return parseEntityRec(ts, [...asts, ast]);
-  } else {
+  if (match(tokenType.R_BRACE, tokens)) {
     const [_, ts] = consumeWithExpected(tokenType.R_BRACE, tokens);
     return [asts, ts];
+  } else {
+    const [ast, ts] = parseCode(tokens, precedences.ENTITY);
+    return parseEntityRec(ts, [...asts, ast]);
   }
 };
 
@@ -76,18 +76,100 @@ export const parsePrefixOperator = (token, tokens) => {
 
 // parseNumber :: token -> token[] -> [ast, token[]]
 export const parseNumber = (token, tokens) => {
-  return [numberExpression(token), tokens];
+  return [nnisExpression(token), tokens];
 };
 
-// parseName :: token -> token[] -> ast
-export const parseName = (token, tokens) => {
-  return [nameExpression(token), tokens];
-};
-
-// parseString :: token -> token[] -> ast
+// parseString :: token -> token[] -> [ast, token[]]
 export const parseString = (token, tokens) => {
-  return [stringExpression(token), tokens];
+  return [nnisExpression(token), tokens];
 };
+
+/**
+ * parseNIR :: token -> token[] -> [ast, token[]]
+ * Name, Identifier, Reference
+ */
+export const parseNIR = (token, tokens) => {
+  // console.log(
+  //   "\n--------\nparseNIR",
+  //   "\nTOKEN_TYPE\n",
+  //   token.type,
+  //   "\nTOKEN\n",
+  //   token
+  // "\nTOKENS\n",
+  // tokens
+  // );
+
+  const [isSiggy, maybeSiggyTokens, remainingTokens] = areSiggyTokens([
+    token,
+    ...tokens
+  ]);
+
+  // console.log(
+  //   "\n----------\nNIR:SIGGYS?\n",
+  //   isSiggy,
+  //   "\nMAYBE SIGGY TOKENS\n",
+  //   maybeSiggyTokens,
+  //   "\nREMAINING TOKENS\n",
+  //   remainingTokens
+  // );
+
+  // A reference that is not part of an entity signature
+  if (!isSiggy && token.type === tokenType.REFERENCE) {
+    const [referenceTokens, remainingTokens] = expandReference([
+      token,
+      ...tokens
+    ]);
+
+    // console.log("\n>>---------\nREFERENCE\n", [token, ...tokens]);
+    // console.log("\n>>---------\nREFERENCE TOKENS\n", referenceTokens);
+    // console.log("\n>>---------\nREMAINING TOKENS\n", remainingTokens);
+
+    return [referenceExpression(referenceTokens), remainingTokens];
+  }
+
+  return isSiggy
+    ? [siggyExpression(maybeSiggyTokens), remainingTokens]
+    : [nnisExpression(maybeSiggyTokens[0]), remainingTokens];
+};
+
+/**
+ * expandReference :: tokens -> [token[], token[]]
+ */
+const expandReference = tokens => {
+  let idx = 0;
+  let referenceTokens = [tokens[idx]];
+
+  while (tokens[idx + 1].type === tokenType.PERIOD) {
+    idx += 2;
+    referenceTokens = referenceTokens.concat(tokens[idx]);
+  }
+
+  return [referenceTokens, tokens.slice(idx + 1)];
+};
+
+/**
+ * isSiggy :: token[] -> [boolean, token[], token[]]
+ * Checks if the next set of tokens makes an entity signature
+ */
+const areSiggyTokens = tokens => {
+  let idx = 0;
+
+  while (isNir(tokens[idx])) {
+    idx++;
+  }
+
+  return tokens[idx] && tokens[idx].type === tokenType.L_BRACE
+    ? [true, tokens.slice(0, idx), tokens.slice(idx)]
+    : [false, [tokens[0]], tokens.slice(1)];
+};
+
+// isNir :: token -> boolean
+const isNir = token =>
+  !token
+    ? false
+    : [tokenType.NAME, tokenType.IDENTIFIER, tokenType.REFERENCE].includes(
+        token.type
+      );
 
 /**
  * parseInfixOperator :: token -> token -> token[] -> [ast, token[]]
@@ -161,7 +243,7 @@ export const parseAssignment = (token, tokens) => {
       Expected token ${tokenType.EQUALS} and found ${equalsChar.type}`);
   }
 
-  const [rhs, remTs] = parseCode(tsOnRHS, precedences.EQUALS);
+  const [rhs, remTs] = parseCode(tsOnRHS, precedences.ASSIGNMENT);
 
   return [assignmentExpression(identifier, rhs), remTs];
 };
@@ -176,7 +258,7 @@ export const parseProperty = (key, colonChar, tokens) => {
       Expected token ${tokenType.COLON} and found ${colonChar.type}`);
   }
 
-  const [rhs, remTs] = parseCode(tokens, precedences.EQUALS);
+  const [rhs, remTs] = parseCode(tokens, precedences.PROPERTY);
 
   return [propertyExpression(key, rhs), remTs];
 };

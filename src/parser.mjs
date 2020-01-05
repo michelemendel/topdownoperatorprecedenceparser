@@ -26,7 +26,7 @@ export const parsePrefix = ([token, tokens, precedence]) => {
     ];
   }
 
-  //   console.log("\n--- prefix", prefix);
+  console.log("\n------\nPREFIX\n------\n", prefix);
 
   return parseInfix([...prefix.parse(token, tokens), precedence]);
 };
@@ -35,19 +35,21 @@ export const parsePrefix = ([token, tokens, precedence]) => {
  * parseInfix :: ast -> token[] -> int -> [ast, token[]]
  */
 const parseInfix = ([ast, tokens, precedence]) => {
-  //   console.log(
-  //     "\n--- parseInfix",
-  //     precedence,
-  //     getPrecedence(tokens),
-  //     "\n",
-  //     tokens,
-  //     "\n",
-  //     ast
-  //   );
+  // console.log(
+  //   "\n-----------\nPARSE INFIX\n-----------",
+  //   "\n\tPREC/NEXT",
+  //   precedence,
+  //   "/",
+  //   getPrecedence(tokens),
+  //   "\n\tTOKENS\n\t",
+  //   tokens.map(t => `${t.type}, ${t.value}`),
+  //   "\n\tAST\n",
+  //   JSON.stringify(ast, null, 2)
+  // );
 
   if (precedence < getPrecedence(tokens)) {
     const parse = ([token, tokens]) => {
-      console.log("\n--- infix", infixParselets(token));
+      console.log("\n------\nINFIX\n", infixParselets(token));
       return infixParselets(token).parse(ast, token, tokens);
     };
 
@@ -75,11 +77,11 @@ export const consumeWithExpected = (expectedTokenType, tokens) => {
 };
 
 // lookAhead :: token[] -> int -> token
-const lookAhead = (tokens, distance = 0) => {
+export const lookAhead = (tokens, distance = 0) => {
   return tokens[0] ? tokens[0] : [];
 };
 
-// matchAndConsume :: token -> token[] -> boolean
+// match :: token -> token[] -> boolean
 export const match = (expectedTokenType, tokens) => {
   return lookAhead(tokens).type === expectedTokenType;
 };

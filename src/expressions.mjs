@@ -22,8 +22,24 @@ export const prefixExpression = (token, right) => {
   };
 };
 
-// numberExpression :: token -> expression
-export const numberExpression = token => {
+/**
+ * referenceExpression :: token[] -> expression
+ * Number, Name, Identifier, String
+ */
+export const referenceExpression = tokens => {
+  return {
+    type: tokenType.REFERENCE,
+    value: [tokens[0].value.slice(1), ...tokens.slice(1).map(t => t.value)]
+    // lineNr: token.lineNr,
+    // columnNr: token.columnNr
+  };
+};
+
+/**
+ * nnisExpression :: token -> expression
+ * Number, Name, Identifier, String
+ */
+export const nnisExpression = token => {
   return {
     type: token.type,
     value: token.value
@@ -32,21 +48,19 @@ export const numberExpression = token => {
   };
 };
 
-// nameExpression :: token -> expression
-export const nameExpression = token => {
-  return {
-    type: token.type,
-    value: token.value
-    // lineNr: token.lineNr,
-    // columnNr: token.columnNr
-  };
-};
+/**
+ * siggyExpression :: token[] -> expression
+ * Name, Identifier, Reference
+ */
+export const siggyExpression = siggyTokens => {
+  // console.log("\n--------------\nnirExpression\n", siggyTokens);
 
-// stringExpression :: token -> expression
-export const stringExpression = token => {
   return {
-    type: token.type,
-    value: token.value
+    type: tokenType.SIGNATURE,
+    value: siggyTokens.map(st => ({
+      type: st.type,
+      value: st.value
+    }))
     // lineNr: token.lineNr,
     // columnNr: token.columnNr
   };

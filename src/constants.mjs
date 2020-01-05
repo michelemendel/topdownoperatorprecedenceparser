@@ -1,16 +1,17 @@
 export const precedences = {
   _: 0,
   CALL: 1,
-  CONDITIONAL: 2,
-  EQUALS: 2,
-  COLON: 2,
-  SUM: 3,
-  MINUS: 3,
-  PRODUCT: 4,
-  DIVIDE: 4,
-  EXPONENT: 5,
-  PREFIX: 6,
-  POSTFIX: 7
+  CONDITIONAL: 1,
+  ASSIGNMENT: 1,
+  ENTITY: 2,
+  PROPERTY: 3,
+  SUM: 4,
+  MINUS: 4,
+  PRODUCT: 5,
+  DIVIDE: 5,
+  EXPONENT: 6,
+  PREFIX: 7,
+  POSTFIX: 8
 };
 
 export const tokenType = {
@@ -22,13 +23,19 @@ export const tokenType = {
   DOCUMENT: "DOCUMENT",
   ENTITY: "ENTITY",
   EQUALS: "EQUALS",
+  IDENTIFIER: "IDENTIFIER",
   L_BRACE: "L_BRACE",
   L_BRACKET: "L_BRACKET",
   L_PAREN: "L_PAREN",
+  NAME: "NAME",
+  PERIOD: "PERIOD",
   PROPERTY: "PROPERTY",
   R_BRACE: "R_BRACE",
   R_BRACKET: "R_BRACKET",
-  R_PAREN: "R_PAREN"
+  R_PAREN: "R_PAREN",
+  REFERENCE: "REFERENCE",
+  SIGNATURE: "SIGNATURE",
+  STRING: "STRING"
 };
 
 export const punctuators = {
@@ -37,7 +44,7 @@ export const punctuators = {
   "*": "PRODUCT",
   "/": "DIVIDE",
   "^": "CARET",
-  ".": "PERIOD",
+  ".": tokenType.PERIOD,
   "\\": "BACKSLASH",
   ":": tokenType.COLON,
   "%": "PERCENT",

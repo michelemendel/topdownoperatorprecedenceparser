@@ -37,16 +37,16 @@ const parse = tokens => {
 };
 
 const code = `
-john billie #hashID @mergeMe @mergeMeToo {
-    // let v = velocity +99
-    x : y
-    // xxxxxxxx : 4 + 7 * 8
+@REF.aaa.bbb.ccc
+let abc = @hello.world
+widget #mySW {
+  table : @substrata.hubby.table_1
 }
 `;
 
 const tokens = tokenize(rootify(code));
 splash();
-showTokens(tokens);
+// showTokens(tokens);
 parse(tokens);
 
 // -----------------------------------------------------------

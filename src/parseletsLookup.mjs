@@ -9,7 +9,7 @@ import {
   parseGroup,
   parseProperty,
   parseInfixOperator,
-  parseName,
+  parseNIR,
   parseNumber,
   parsePrefixOperator,
   parseString
@@ -19,8 +19,10 @@ export const prefixParselets = token => {
   return {
     DOCUMENT: { parse: parseDocument, precedence: precedences._ },
     NUMBER: { parse: parseNumber, precedence: precedences._ },
-    NAME: { parse: parseName, precedence: precedences._ },
     STRING: { parse: parseString, precedence: precedences._ },
+    NAME: { parse: parseNIR, precedence: precedences._ },
+    IDENTIFIER: { parse: parseNIR, precedence: precedences._ },
+    REFERENCE: { parse: parseNIR, precedence: precedences._ },
     ASSIGNMENT: { parse: parseAssignment, precedence: precedences._ },
     QUESTION: { parse: parseConditional, precedence: precedences._ },
     L_PAREN: { parse: parseGroup, precedence: precedences._ },
@@ -48,8 +50,8 @@ export const infixParselets = token => {
       rightAssoc: true
     },
     L_PAREN: { parse: parseCall, precedence: precedences.CALL },
-    L_BRACE: { parse: parseEntity, precedence: precedences.CALL },
-    EQUALS: { parse: parseInfixOperator, precedence: precedences.EQUALS },
-    COLON: { parse: parseProperty, precedence: precedences.COLON }
+    L_BRACE: { parse: parseEntity, precedence: precedences.ENTITY },
+    EQUALS: { parse: parseInfixOperator, precedence: precedences.ASSIGNMENT },
+    COLON: { parse: parseProperty, precedence: precedences.PROPERTY }
   }[token.type];
 };
