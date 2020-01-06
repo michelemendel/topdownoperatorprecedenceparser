@@ -39,14 +39,15 @@ const parse = tokens => {
 const code = `
 @REF.aaa.bbb.ccc
 let abc = @hello.world
-widget #mySW {
+widget #mySW { // xxxxxxxxINILNIENxxxxxxxxxxxx
+  // xxxxxxxxxxxxxxxxxxxx
   table : @substrata.hubby.table_1
 }
 `;
 
 const tokens = tokenize(rootify(code));
 splash();
-// showTokens(tokens);
+showTokens(tokens);
 parse(tokens);
 
 // -----------------------------------------------------------

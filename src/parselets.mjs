@@ -8,6 +8,7 @@ import {
 } from "./parser.mjs";
 import {
   assignmentExpression,
+  commentExpression,
   entityExpression,
   callExpression,
   nnisExpression,
@@ -20,6 +21,13 @@ import {
 import { consume } from "./parser.mjs";
 
 const _ = {};
+
+// parseComment :: token -> token[] -> [ast, token[]]
+export const parseComment = (token, tokens) => {
+  console.log("\n-------\nCOMMENT", token, tokens);
+  // const [ast, remainingTokens] = parseCode(tokens);
+  return [commentExpression(token), tokens];
+};
 
 // parseDocument :: token -> token[] -> [ast, token[]]
 export const parseDocument = (token, tokens) => {
@@ -89,29 +97,10 @@ export const parseString = (token, tokens) => {
  * Name, Identifier, Reference
  */
 export const parseNIR = (token, tokens) => {
-  // console.log(
-  //   "\n--------\nparseNIR",
-  //   "\nTOKEN_TYPE\n",
-  //   token.type,
-  //   "\nTOKEN\n",
-  //   token
-  // "\nTOKENS\n",
-  // tokens
-  // );
-
   const [isSiggy, maybeSiggyTokens, remainingTokens] = areSiggyTokens([
     token,
     ...tokens
   ]);
-
-  // console.log(
-  //   "\n----------\nNIR:SIGGYS?\n",
-  //   isSiggy,
-  //   "\nMAYBE SIGGY TOKENS\n",
-  //   maybeSiggyTokens,
-  //   "\nREMAINING TOKENS\n",
-  //   remainingTokens
-  // );
 
   // A reference that is not part of an entity signature
   if (!isSiggy && token.type === tokenType.REFERENCE) {
@@ -119,10 +108,6 @@ export const parseNIR = (token, tokens) => {
       token,
       ...tokens
     ]);
-
-    // console.log("\n>>---------\nREFERENCE\n", [token, ...tokens]);
-    // console.log("\n>>---------\nREFERENCE TOKENS\n", referenceTokens);
-    // console.log("\n>>---------\nREMAINING TOKENS\n", remainingTokens);
 
     return [referenceExpression(referenceTokens), remainingTokens];
   }

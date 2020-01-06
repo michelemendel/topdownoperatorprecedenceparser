@@ -1,5 +1,16 @@
 import { tokenType } from "./constants.mjs";
 
+// commentExpression :: tokenType -> ast -> expression
+export const commentExpression = token => {
+  return {
+    type: token.type,
+    value: token.value
+    // children: [right]
+    // lineNr: token.lineNr,
+    // columnNr: token.columnNr,
+  };
+};
+
 // documentExpression :: tokenType -> ast -> expression
 export const entityExpression = (tokenType, name, right) => {
   return {

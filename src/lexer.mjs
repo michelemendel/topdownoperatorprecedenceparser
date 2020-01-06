@@ -45,8 +45,14 @@ export function tokenize(source) {
     // [6]  Punctuator
 
     let columnNr = 0;
+
+    // Make a token object and append it to the result.
     let makeToken = function(type, value) {
-      // Make a token object and append it to the result.
+      // Is comment inline?
+      if (type === "COMMENT" && lineNr === result[result.length - 1].lineNr) {
+        type = "COMMENT_INLINE";
+      }
+
       result.push({
         type,
         value,
@@ -65,7 +71,7 @@ export function tokenize(source) {
       } else if (captives[1]) {
         //Intentionally ignore whitespace
       } else if (captives[2]) {
-        //Intentionally ignore comment
+        makeToken("COMMENT", captives[2]);
       } else if (captives[3]) {
         makeToken(getType(captives[3]), captives[3]);
       } else if (captives[4]) {
