@@ -4,7 +4,7 @@
   "description": "",
   "main": "",
   "scripts": {
-    "start": "nodemon  --experimental-modules src/main.mjs",
+    "start": " nodemon --experimental-modules src/main.mjs",
     "test": "tap",
     "test:watch": "tap --watch",
     "tapconfig": "tap --dump-config"

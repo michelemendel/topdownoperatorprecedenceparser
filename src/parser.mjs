@@ -22,11 +22,11 @@ export const parsePrefix = ([token, tokens, precedence]) => {
     return [
       {},
       tokens,
-      SyntaxError(`Could not parse ${token.value} of type ${token.type}.`)
+      SyntaxError(`Could not parse ${token.value} of type ${token.type}.`),
     ];
   }
 
-  console.log("\n------\nPREFIX\n------\n", prefix);
+  // console.log("\n------\nPREFIX\n------\n", prefix);
 
   return parseInfix([...prefix.parse(token, tokens), precedence]);
 };
@@ -49,7 +49,7 @@ const parseInfix = ([ast, tokens, precedence]) => {
 
   if (precedence < getPrecedence(tokens)) {
     const parse = ([token, tokens]) => {
-      console.log("\n------\nINFIX\n", infixParselets(token));
+      // console.log("\n------\nINFIX\n", infixParselets(token));
       return infixParselets(token).parse(ast, token, tokens);
     };
 

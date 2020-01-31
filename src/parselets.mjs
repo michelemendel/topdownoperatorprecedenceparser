@@ -4,7 +4,7 @@ import {
   consumeWithExpected,
   match,
   matchAndConsume,
-  parseCode
+  parseCode,
 } from "./parser.mjs";
 import {
   assignmentExpression,
@@ -16,7 +16,7 @@ import {
   prefixExpression,
   propertyExpression,
   referenceExpression,
-  siggyExpression
+  siggyExpression,
 } from "./expressions.mjs";
 import { consume } from "./parser.mjs";
 
@@ -24,7 +24,7 @@ const _ = {};
 
 // parseComment :: token -> token[] -> [ast, token[]]
 export const parseComment = (token, tokens) => {
-  console.log("\n-------\nCOMMENT", token, tokens);
+  // console.log("\n-------\nCOMMENT", token, tokens);
   // const [ast, remainingTokens] = parseCode(tokens);
   return [commentExpression(token), tokens];
 };
@@ -99,14 +99,14 @@ export const parseString = (token, tokens) => {
 export const parseNIR = (token, tokens) => {
   const [isSiggy, maybeSiggyTokens, remainingTokens] = areSiggyTokens([
     token,
-    ...tokens
+    ...tokens,
   ]);
 
   // A reference that is not part of an entity signature
   if (!isSiggy && token.type === tokenType.REFERENCE) {
     const [referenceTokens, remainingTokens] = expandReference([
       token,
-      ...tokens
+      ...tokens,
     ]);
 
     return [referenceExpression(referenceTokens), remainingTokens];
@@ -153,7 +153,7 @@ const isNir = token =>
   !token
     ? false
     : [tokenType.NAME, tokenType.IDENTIFIER, tokenType.REFERENCE].includes(
-        token.type
+        token.type,
       );
 
 /**
@@ -163,7 +163,7 @@ export const parseInfixOperator = (left, token, tokens) => {
   const [ast, remainingTokens] = parseCode(
     tokens,
     precedences[token.type] -
-      (infixParselets(token) && infixParselets(token).rightAssoc ? 1 : 0)
+      (infixParselets(token) && infixParselets(token).rightAssoc ? 1 : 0),
   );
 
   return [operatorExpression(left, token, ast), remainingTokens];
@@ -187,7 +187,7 @@ export const parseCall = (left, token, tokens) => {
   const [args, remTs] = parseCallRec(
     !match(tokenType.R_PAREN, tokens),
     tokens,
-    []
+    [],
   );
 
   return [callExpression(left, args), remTs];
@@ -220,7 +220,7 @@ export const parseAssignment = (token, tokens) => {
   const [identifier, ts] = consume(tokens);
   const [isEqualChar, equalsChar, tsOnRHS] = matchAndConsume(
     tokenType.EQUALS,
-    ts
+    ts,
   );
 
   if (!isEqualChar) {

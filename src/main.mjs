@@ -1,66 +1,77 @@
-import { tokenize } from "./lexer.mjs";
+import { tokenizeCode } from "./lexer.mjs";
 import { parseCode, rootify } from "./parser.mjs";
+import { performance, PerformanceObserver } from "perf_hooks";
+import util from "util";
+// import { code3 as x } from "../data/simple1.mjs";
+// import { code1 as code } from "../data/empower.mjs";
+import { code } from "../data/empower.mjs";
+
+const debug = util.debuglog("performance");
+const log = console.log;
+const VERBOSE = {
+  ON: true,
+  OFF: false,
+};
 
 const splash = () => {
-  console.log("\n=========================================");
-  console.log("================= START =================");
-  console.log("=========================================\n");
+  log("\n=========================================");
+  log("================= START =================");
+  log("=========================================\n");
 };
 
-/**
- *
- */
-const showTokens = tokens => {
-  console.log("\n========== TOKENS\n");
-  console.log(
-    "tokens",
-    tokens
-    //   tokens.map(t => `${t.type}, ${t.value}`)
-  );
-  // console.log(JSON.stringify(tokens, null, "\t"));
+const initPerf = (verbose = VERBOSE.ON) => {
+  if (verbose) {
+    const obs = new PerformanceObserver(measure => {
+      const m = measure.getEntries()[0];
+      log(
+        util.format(
+          "\x1b[31mPERFORMANCE:\x1b[0m %s\t%s ms",
+          m.name,
+          m.duration,
+        ),
+      );
+      performance.clearMarks();
+    });
+    obs.observe({ entryTypes: ["function"] });
+  }
 };
 
-/**
- *
- */
-const parse = tokens => {
+const tokenize = (code, verbose = VERBOSE.ON) => {
+  const tokens = tokenizeCode(rootify(code));
+
+  if (verbose) {
+    console.log("\n========== TOKENS\n");
+    console.log(
+      "tokens",
+      tokens,
+      //   tokens.map(t => `${t.type}, ${t.value}`)
+    );
+    // console.log(JSON.stringify(tokens, null, "\t"));
+  }
+
+  return tokens;
+};
+
+const parse = (tokens, verbose = VERBOSE.ON) => {
   const [ast, remainingTokens, errors] = parseCode(tokens);
 
-  console.log("\n========== AST\n");
-  console.log(JSON.stringify(ast, null, "  "));
-  console.log("\n========== REMAINING TOKENS (should be empty)\n");
-  console.log(JSON.stringify(remainingTokens, null, "  "));
-  console.log("\n========== ERRORS\n");
-  console.log(
-    errors ? `\nERROR\n ${errors.message} "\nSTACK\n" ${errors.stack}` : ""
-  );
+  if (verbose) {
+    log("\n========== AST\n");
+    log(JSON.stringify(ast, null, "  "));
+    log("\n========== REMAINING TOKENS (should be empty)\n");
+    log(JSON.stringify(remainingTokens, null, "  "));
+    log("\n========== ERRORS\n");
+    log(
+      errors ? `\nERROR\n ${errors.message} "\nSTACK\n" ${errors.stack}` : "",
+    );
+  }
 };
 
-const code = `
-@REF.aaa.bbb.ccc
-let abc = @hello.world
-widget #mySW { // xxxxxxxxINILNIENxxxxxxxxxxxx
-  // xxxxxxxxxxxxxxxxxxxx
-  table : @substrata.hubby.table_1
-}
-`;
-
-const tokens = tokenize(rootify(code));
 splash();
-showTokens(tokens);
-parse(tokens);
 
-// -----------------------------------------------------------
-// const code1 = `
-// 2 * 1440 - 909 % 888
-// // ( HELLO BYE )
-// //Johnny B
-// //"hello"
-// //let qwe = (-2+-7)
-// //widget arne #jonhson @nr1 {
-// //  abx: 123 / 999
-// //}
-// //let fn = function() {};
-// // This is a comment
-// // (2 + 4) * (8 + 9)
-// `;
+initPerf(VERBOSE.ON);
+const timedTokenize = performance.timerify(tokenize);
+const timedParse = performance.timerify(parse);
+
+const tokens = timedTokenize(code, VERBOSE.OFF);
+timedParse(tokens, VERBOSE.OFF);

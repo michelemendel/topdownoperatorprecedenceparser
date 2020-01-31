@@ -25,7 +25,7 @@ import { getPunctuatorName, getType } from "./constants.mjs";
 
 const rx_crlf = /\n|\r\n?/;
 
-export function tokenize(source) {
+export function tokenizeCode(source) {
   // tokenize takes a source and produces from it an array of token objects.
   // If the source is not an array, then it is split into lines at the
   // carriage return/linefeed.
@@ -57,7 +57,7 @@ export function tokenize(source) {
         type,
         value,
         lineNr,
-        columnNr
+        columnNr,
       });
     };
 
