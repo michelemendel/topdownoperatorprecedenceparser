@@ -1,7 +1,7 @@
 import t from "tap";
 import { tokenize } from "../src/lexer.mjs";
 import { parseCode } from "../src/parser.mjs";
-import { punctuators } from "../src/constants.mjs";
+import { punctuations } from "../src/constants.mjs";
 
 /**
  * Three parts
@@ -33,12 +33,12 @@ const standardSuccess = (input, wanted, wantedRemains, errorMsg) => {
 const input1 = op => `2 ${op} 10 * 8`;
 
 const wanted1 = op => ({
-  type: punctuators[op],
+  type: punctuations[op],
   value: op,
   children: [
     {
       type: "NUMBER",
-      value: 2
+      value: 2,
     },
     {
       type: "PRODUCT",
@@ -46,15 +46,15 @@ const wanted1 = op => ({
       children: [
         {
           type: "NUMBER",
-          value: 10
+          value: 10,
         },
         {
           type: "NUMBER",
-          value: 8
-        }
-      ]
-    }
-  ]
+          value: 8,
+        },
+      ],
+    },
+  ],
 });
 
 const wantedRemains1 = [];
@@ -71,7 +71,7 @@ const input2 = `2 % 10 * 8`;
 
 const wanted2 = {
   type: "NUMBER",
-  value: 2
+  value: 2,
 };
 
 const wantedRemains2 = [
@@ -79,26 +79,26 @@ const wantedRemains2 = [
     type: "PERCENT",
     value: "%",
     lineNr: 0,
-    columnNr: 2
+    columnNr: 2,
   },
   {
     type: "NUMBER",
     value: 10,
     lineNr: 0,
-    columnNr: 4
+    columnNr: 4,
   },
   {
     type: "PRODUCT",
     value: "*",
     lineNr: 0,
-    columnNr: 7
+    columnNr: 7,
   },
   {
     type: "NUMBER",
     value: 8,
     lineNr: 0,
-    columnNr: 9
-  }
+    columnNr: 9,
+  },
 ];
 
 const errorMsg = "the remains should not be empty";
@@ -122,9 +122,9 @@ const wanted3 = {
       children: [
         {
           type: "NUMBER",
-          value: 2
-        }
-      ]
+          value: 2,
+        },
+      ],
     },
     {
       type: "PRODUCT",
@@ -132,7 +132,7 @@ const wanted3 = {
       children: [
         {
           type: "NUMBER",
-          value: 4
+          value: 4,
         },
         {
           type: "MINUS",
@@ -140,13 +140,13 @@ const wanted3 = {
           children: [
             {
               type: "NUMBER",
-              value: 8
-            }
-          ]
-        }
-      ]
-    }
-  ]
+              value: 8,
+            },
+          ],
+        },
+      ],
+    },
+  ],
 };
 
 const wantedRemains3 = [];
@@ -170,19 +170,19 @@ const wanted4 = {
       children: [
         {
           type: "NUMBER",
-          value: 2
+          value: 2,
         },
         {
           type: "NUMBER",
-          value: 4
-        }
-      ]
+          value: 4,
+        },
+      ],
     },
     {
       type: "NUMBER",
-      value: 8
-    }
-  ]
+      value: 8,
+    },
+  ],
 };
 
 const wantedRemains4 = [];
@@ -199,7 +199,7 @@ const input5 = `myfn()`;
 const wanted5 = {
   type: "CALL",
   value: "myfn",
-  children: []
+  children: [],
 };
 
 const wantedRemains5 = [];
@@ -214,9 +214,9 @@ const wanted6 = {
   children: [
     {
       type: "NAME",
-      value: "a"
-    }
-  ]
+      value: "a",
+    },
+  ],
 };
 
 const wantedRemains6 = [];
@@ -231,13 +231,13 @@ const wanted7 = {
   children: [
     {
       type: "NAME",
-      value: "a"
+      value: "a",
     },
     {
       type: "NAME",
-      value: "b"
-    }
-  ]
+      value: "b",
+    },
+  ],
 };
 
 const wantedRemains7 = [];
@@ -260,14 +260,14 @@ const wanted8 = {
     children: [
       {
         type: "NUMBER",
-        value: 111
+        value: 111,
       },
       {
         type: "NUMBER",
-        value: 555
-      }
-    ]
-  }
+        value: 555,
+      },
+    ],
+  },
 };
 
 const wantedRemains8 = [];

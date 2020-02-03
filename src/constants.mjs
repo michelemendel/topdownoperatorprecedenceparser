@@ -1,17 +1,17 @@
 export const precedences = {
   _: 0,
-  CALL: 1,
   CONDITIONAL: 1,
   ASSIGNMENT: 1,
   ENTITY: 2,
   PROPERTY: 3,
-  SUM: 4,
-  MINUS: 4,
-  PRODUCT: 5,
-  DIVIDE: 5,
-  EXPONENT: 6,
-  PREFIX: 7,
-  POSTFIX: 8
+  CALL: 4,
+  SUM: 5,
+  MINUS: 5,
+  PRODUCT: 6,
+  DIVIDE: 6,
+  EXPONENT: 7,
+  PREFIX: 8,
+  POSTFIX: 9,
 };
 
 export const tokenType = {
@@ -35,10 +35,10 @@ export const tokenType = {
   R_PAREN: "R_PAREN",
   REFERENCE: "REFERENCE",
   SIGNATURE: "SIGNATURE",
-  STRING: "STRING"
+  STRING: "STRING",
 };
 
-export const punctuators = {
+export const punctuations = {
   "+": "SUM",
   "-": "MINUS",
   "*": "PRODUCT",
@@ -66,10 +66,10 @@ export const punctuators = {
   "[": tokenType.L_BRACKET,
   "]": tokenType.R_BRACKET,
   "=": tokenType.EQUALS,
-  "==": "DOUBLE_EQUALS"
+  "==": "DOUBLE_EQUALS",
 };
 
-export const getPunctuatorName = op => punctuators[op];
+export const getPunctuationName = op => punctuations[op];
 
 export const getType = name =>
   name === "document"

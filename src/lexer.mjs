@@ -1,4 +1,4 @@
-import { getPunctuatorName, getType } from "./constants.mjs";
+import { getPunctuationName, getType } from "./constants.mjs";
 
 /**
  * tokens.js
@@ -84,7 +84,7 @@ export function tokenizeCode(source) {
       } else if (captives[5]) {
         makeToken("STRING", JSON.parse(captives[5]));
       } else if (captives[6]) {
-        makeToken(getPunctuatorName(captives[6]), captives[0]);
+        makeToken(getPunctuationName(captives[6]), captives[0]);
       }
       columnNr = rx_token.lastIndex;
     }

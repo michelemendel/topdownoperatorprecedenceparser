@@ -133,7 +133,7 @@ const expandReference = tokens => {
 };
 
 /**
- * isSiggy :: token[] -> [boolean, token[], token[]]
+ * areSiggyTokens :: token[] -> [boolean, token[], token[]]
  * Checks if the next set of tokens makes an entity signature
  */
 const areSiggyTokens = tokens => {

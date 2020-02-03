@@ -1287,7 +1287,8 @@ page #PortfolioHealth {
       value:todo //COUNT(respondent:responseStatus)
       //      value:todo //COUNT(respondent:responseStatus, @daterange.currentPeriodRelResp)
       chart: "bar"
-      palette: todo //'#CCCCCC', '#f44245', '#f49541','#f4ee41','#caf441','#54bc23'
+      isNotYetSent: respondent:noOfEmailsSent = 0 AND respondent:smtpStatus != "messageSent"
+    isOptOut: todo //respondent:OptOut = "3" OR respondent:OptOut = "6"
       //format:
       percentFormat: percentDefaultFormatter
       //navigateTo: "Response Management"

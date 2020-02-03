@@ -2,9 +2,8 @@ import { tokenizeCode } from "./lexer.mjs";
 import { parseCode, rootify } from "./parser.mjs";
 import { performance, PerformanceObserver } from "perf_hooks";
 import util from "util";
-// import { code3 as x } from "../data/simple1.mjs";
-// import { code1 as code } from "../data/empower.mjs";
-import { code } from "../data/empower.mjs";
+import { codeWithFunctions as code } from "../data/simple1.mjs";
+import { code as x } from "../data/empower.mjs";
 
 const debug = util.debuglog("performance");
 const log = console.log;
@@ -19,7 +18,7 @@ const splash = () => {
   log("=========================================\n");
 };
 
-const initPerf = (verbose = VERBOSE.ON) => {
+const initPerformance = (verbose = VERBOSE.ON) => {
   if (verbose) {
     const obs = new PerformanceObserver(measure => {
       const m = measure.getEntries()[0];
@@ -69,9 +68,9 @@ const parse = (tokens, verbose = VERBOSE.ON) => {
 
 splash();
 
-initPerf(VERBOSE.ON);
+initPerformance(VERBOSE.OFF);
 const timedTokenize = performance.timerify(tokenize);
 const timedParse = performance.timerify(parse);
 
-const tokens = timedTokenize(code, VERBOSE.OFF);
-timedParse(tokens, VERBOSE.OFF);
+const tokens = timedTokenize(code, VERBOSE.ON);
+timedParse(tokens, VERBOSE.ON);
