@@ -2,7 +2,7 @@ import { tokenizeCode } from "./lexer.mjs";
 import { parseCode, rootify } from "./parser.mjs";
 import { performance, PerformanceObserver } from "perf_hooks";
 import util from "util";
-import { codeWithFunctions as code } from "../data/simple1.mjs";
+import { codeWithDocuments as code } from "../data/simple1.mjs";
 import { code as x } from "../data/empower.mjs";
 
 const debug = util.debuglog("performance");

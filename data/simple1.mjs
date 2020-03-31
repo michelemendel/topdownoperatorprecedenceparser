@@ -38,6 +38,85 @@ Johnny B
 export const code3 = `
 variable auto #respCount {
   value: x //'IIF(@filter.isResponded, "c", IIF(@filter.isOptOut, "o", IIF(@filter.isPartial, "p", IIF(@filter.isFailedInvite, "f", IIF(@filter.isNotYetSent, "ns", "n")))))'
-}
-  
+}  
 `;
+
+export const codeWithDocuments = `
+#System
+let sysVar = 111
+
+#Program
+let progVar = 222
+
+#MyCDL
+let myCdlVar = 333
+`;
+
+let ast = {
+  type: "DOCUMENT",
+  value: {
+    type: "IDENTIFIER",
+    value: "#Root",
+    lineNr: 0,
+    columnNr: 9,
+  },
+  children: [
+    {
+      type: "DOCUMENT",
+      value: {
+        type: "IDENTIFIER",
+        value: "#System",
+        lineNr: 1,
+        columnNr: 9,
+      },
+      children: [
+        {
+          type: "ASSIGNMENT",
+          value: "sysVar",
+          children: {
+            type: "NUMBER",
+            value: 111,
+          },
+        },
+      ],
+    },
+    {
+      type: "DOCUMENT",
+      value: {
+        type: "IDENTIFIER",
+        value: "#Program",
+        lineNr: 4,
+        columnNr: 9,
+      },
+      children: [
+        {
+          type: "ASSIGNMENT",
+          value: "progVar",
+          children: {
+            type: "NUMBER",
+            value: 222,
+          },
+        },
+      ],
+    },
+    {
+      type: "DOCUMENT",
+      value: {
+        type: "IDENTIFIER",
+        value: "#MyCDL",
+        lineNr: 7,
+        columnNr: 9,
+      },
+      children: [
+        {
+          type: "ASSIGNMENT",
+          value: "myCdlVar",
+          children: {
+            type: "NUMBER",
+            value: 333,
+          },
+        },
+      ],
+    },
+  ],
+};
